@@ -1,64 +1,100 @@
-//This app shall handle requests in the form registration and records document. 
-const http = require('http');//for creating server
-const fs = require('fs');//for handling file reading and writing. 
-const path = require('path');//For combining file paths with folder paths.
-const querystring = require('querystring'); //For handling requests with data.
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+const querystring = require('querystring');
 
 const PORT = 1234;
-const dataFile = path.join(__dirname, 'employees.csv');
+const dataFile = path.join(__dirname, 'data.csv');
 
-if(!fs.existsSync(dataFile)){
-    fs.writeFileSync(dataFile, "Name, Address, Salary\n")
+// Create CSV file if not exists
+if (!fs.existsSync(dataFile)) {
+    fs.writeFileSync(dataFile, "Name,City,Department\n");
 }
 
-const server = http.createServer((req, res)=>{
-   //------------GET to Serve Reg form------------------
-    if(req.method == 'GET' && req.url == '/'){
-        fs.createReadStream('./pages/Registration.html').pipe(res);
+const server = http.createServer((req, res) => {
+
+    // ===============================
+    // GET : Serve Form Page
+    // ===============================
+    if (req.method === 'GET' && req.url === '/') {
+
+        fs.readFile('./pages/form.html', (err, data) => {
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(data);
+        });
     }
-    //------------POST when data is sent to the server-------------
-    else if(req.method == "POST" && req.url == '/submit'){
-        let body =''
-        req.on('data', chunk =>{ //data is a built in event that is handled to extract the data sent to the user.
-             body +=chunk.toString();
-             console.log(body);
+
+    // ===============================
+    // POST : Handle Form Submission
+    // ===============================
+    else if (req.method === 'POST' && req.url === '/submit') {
+
+        let body = '';
+
+        req.on('data', chunk => {
+            body += chunk.toString();
         });
 
-        req.on('end', ()=>{
+        req.on('end', () => {
+
             const formData = querystring.parse(body);
-            const csvRow = `${formData.name}, ${formData.address}, ${formData.salary}\n`;
+
+            const csvRow = `${formData.name},${formData.city},${formData.department}\n`;
+
+            // Append to CSV file
             fs.appendFile(dataFile, csvRow, err => {
-                if(!err){
-                    res.writeHead(202, {'Location': '/records'});
-                    res.end();//close the response after sent...
-                }else{
-                    res.end("Something went wrong!!", err);
+
+                res.writeHead(302, { 'Location': '/records' });
+                res.end();
+            });
+        });
+    }
+
+    // ===============================
+    // GET : Display Records
+    // ===============================
+    else if (req.method === 'GET' && req.url === '/records') {
+
+        fs.readFile(dataFile, 'utf8', (err, csvData) => {
+
+            const rows = csvData.split('\n').slice(1); // Skip header
+
+            let tableRows = '';
+
+            rows.forEach(row => {
+                if (row.trim() !== '') {
+                    const cols = row.split(',');
+
+                    tableRows += `
+                        <tr>
+                            <td>${cols[0]}</td>
+                            <td>${cols[1]}</td>
+                            <td>${cols[2]}</td>
+                        </tr>
+                    `;
                 }
-            })
-        })
-    }
-    else if(req.method =="GET" && req.url == '/records'){
-        let tableRows = '';
-        fs.readFile(dataFile, 'utf-8', (err, csvData)=>{
-            const rows = csvData.split('\n').slice(1);//skip first line. 
-            for(const row of rows){
-                const cols = row.split(',');//split each line into words.
-                tableRows += `<tr>
-                    <td>${cols[0]}</td>
-                    <td>${cols[1]}</td>
-                    <td>${cols[2]}</td>
-                </tr>`;
-            }
-        })
-        console.log(tableRows)
-        fs.readFile('./pages/Records.html', 'utf-8', (err, content)=>{
-            const finalHtml = content.replace('{{TABLE_ROWS}}', tableRows);
-            res.writeHead(200, {'Content-type' : 'text/html'});
-            res.end(finalHtml)
-        })
+            });
+
+            fs.readFile('./pages/records.html', 'utf8', (err, html) => {
+
+                const finalHtml = html.replace('{{TABLE_ROWS}}', tableRows);
+
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.end(finalHtml);
+            });
+        });
     }
 
+    // ===============================
+    // 404
+    // ===============================
+    else {
+        res.writeHead(404);
+        res.end("Page Not Found");
+    }
 
-}).listen(PORT, ()=>{
-    console.log(`Server is running at http://localhost:${PORT}`);
-})
+});
+
+server.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+});
