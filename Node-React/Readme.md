@@ -25,4 +25,16 @@
 6. fs, os, http, events are some of the popular modules for developing nodejs applications. 
 7. U can also use 3rd party modules available under NPM (Node Package Manager), a central repository for all Nodejs modules that can be used in your applications. They are open source and free licenced. 
 
+### Http Modules
+- HTTP Module in Nodejs is a built in module that allows developers to create Web servers without installing any external libraries.
+- HTTP module gives developers complete control over how requests are handled, what headers need to be sent, and how responses are structured. 
+- HTTP allows to create server using API createServer that listens to a specific port. Whenever a request arrives, Nodejs triggers a callback function, passing request and response objects that allow you to read incoming data and send outgoing responses. 
+
+### Diagram Flow
+User --> Browser  --> Node Http server --> Request handler function --> Response Sent to Client. 
+Analogy: Bank Token system:
+- Customer submits request(Browser)
+- Token Counter recieves it.(Http Server)
+- Staff processes request.(Handler)
+- Staff responses appropriately.(Response)
 

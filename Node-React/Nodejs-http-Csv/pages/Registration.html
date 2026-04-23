@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Registration Form</title>
+    <style>
+        body{
+            padding: 5px;
+            margin: 5px;
+        }
+        input{
+            padding: 5px;
+            margin:5px;
+            border-radius: 3px;
+        }
+        i{
+            font-size: 0.8em;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h2>Employee Registration Form</h2>
+    <hr>
+    <form action="/submit" method="post">
+        <div>
+            <label>Name:</label>
+            <input type="text" name="name" required />
+        </div>
+        <div>
+            <label>Address:</label>
+            <input type="text" name="address" required />
+        </div>
+        <div>
+            <label>Salary:</label>
+            <input type="number" name="salary" required min="20000" />
+        </div>
+        <div>
+            <button type="submit">Submit</button>
+        </div>
+    </form>
+
+    <br>
+    <a href="/records">View All Records</a>
+    <hr>
+    <i> @Copyrights -2026 Powered by Nodejs</i>
+</body>
+</html>
