@@ -1,0 +1,8 @@
+1. Overview in JS 
+2. Callback functions 
+3. async, await and Promise.
+4.  Using POSTMAN to test API. 
+5. Middleware: next. 
+6. Express overview.
+7. Sessions, Cookies, LocalStorage
+8. Open- @Auth using Google/Facebook
