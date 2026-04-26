@@ -1,5 +1,5 @@
 {
-  "name": "sample-app",
+  "name": "contact-crud-app",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.2.0",
+    "axios": "^1.15.2",
     "bootstrap": "^5.3.8",
     "react": "^19.2.5",
     "react-dom": "^19.2.5"

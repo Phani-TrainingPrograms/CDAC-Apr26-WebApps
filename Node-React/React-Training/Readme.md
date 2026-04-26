@@ -75,3 +75,25 @@ Browser -> index.html -> main.jsx runs -> React finds root -> Renders App inside
 - React allows DOM Events to be handled using its own event handling feature.
 - As every React element is not HTML Element, all Html events are mapped to custom events of React components. 
 - Every event of React element will have prefix on followed by the event name. 
+
+### Statefull Components
+- Statefull components or Class components are those that store their own state and follows a cycle of events during the rendering of the component to the browser. 
+- It uses Class syntax of JS and extents the React.Component Class. It has render method that returns the JSX part of the component. The render method will be used by React to provide the JSX for the UI. 
+- It also has constructor that initilizes the state of the component. It also has lifecycle used at different stages of the components life time. 
+- setState method is used to update the state of the component and re-render it. setState comes directly with class components whereas we use useState hook in functional components. 
+
+### Folder structure of E2E Application:
+Contact-Manager
+    backend
+        models/contact
+        routes/contactRoutes.js
+        server.js
+    frontend
+        src
+            components
+                ContactForm
+                ContactList
+                ContactCard
+                SearchBar
+            App
+            api
