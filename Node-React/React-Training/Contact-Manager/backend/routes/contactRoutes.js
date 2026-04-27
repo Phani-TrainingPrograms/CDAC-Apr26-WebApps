@@ -3,7 +3,7 @@ const router = express.Router();//for handling routes in express
 const Contact = require("../models/contact")//In module, give the extension also. 
 const multer = require("multer");//for file uploading purpose. 
 const path = require('path')//for file paths
-
+const fs = require("fs");
 
 //Saving to the file...
 const storage = multer.diskStorage({
@@ -36,9 +36,27 @@ router.post("/contact", upload.single("photo"), async(req, res)=>{
 })
 
 router.put("/:id", upload.single("photo") ,async(req, res)=>{
-    console.log(req.params.id)
-    console.log(req.body)
-    const updated = await Contact.findByIdAndUpdate(req.params.id, req.body, { new : true});
+    const existing = await Contact.findById(req.params.id)
+    if(!existing){
+        return res.status(404).json({ error : "Record not found"})
+    }
+    const updatedData = {
+        name : req.body.name,
+        email : req.body.email,
+        phoneNo : req.body.phoneNo,
+    }
+    if(req.file){
+        const oldPath = path.join(__dirname, existing.photo);
+        fs.unlink(oldPath, (err)=>{
+            if(err){
+                console.log("Old file not found to delete")
+            }else{
+                console.log("Old file deleted")
+            }
+        })
+        updatedData.photo = req.file.filename
+    }
+    const updated = await Contact.findByIdAndUpdate(req.params.id, updatedData, { new : true});
     res.json(updated)
 })
 
