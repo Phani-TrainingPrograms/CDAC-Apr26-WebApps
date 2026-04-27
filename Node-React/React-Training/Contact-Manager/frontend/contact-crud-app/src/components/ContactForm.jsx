@@ -1,45 +1,92 @@
-import React from 'react'
-import { useState } from 'react'
-import axios from 'axios'
+import { useEffect } from "react";
+import { useState } from "react";
 
-export default function ContactForm({ onAdd }) {
-    const [form, setForm] = useState({
-        name : "",
-        phoneNo : "",
-        email : "",
-        photo : ""
-    })
+function ContactForm({ onAdd, editData, onUpdate }) {
+  const [form, setForm] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    image: null
+  });
 
-    const handleChange = (e) =>{
-        if(e.target.name == "photo"){
-            debugger;
-            setForm({...form, photo : e.target.value})
-            return;
-        }else{
-            setForm({...form, [e.target.name] : e.target.value})
-        }
+  useEffect(()=>{
+    if(editData){
+        setForm({
+            name : editData.name || "",
+            email : editData.email || "",
+            phoneNo : editData.phoneNo || "",
+            photo : "",
+        })
     }
+  }, [editData])
 
-    const submit = async(e) =>{
-        console.log(form)
-        debugger;
-        e.preventDefault();
-        onAdd(form)
+  const handleChange = (e) => {
+    if (e.target.name === "photo") {
+      setForm({ ...form, photo: e.target.files[0] });
+    } else {
+      setForm({ ...form, [e.target.name]: e.target.value });
     }
+  };
+
+  const submit = (e) => {
+    e.preventDefault();
+    debugger;
+    const data = new FormData();
+    data.append("name", form.name);
+    data.append("phoneNo", form.phoneNo);
+    data.append("email", form.email);
+    data.append("photo", form.photo);
+    console.log(form.photo);
+    if(editData){
+        onUpdate(editData._id, data)
+    }else{
+        onAdd(data);
+    } 
+    // reset form
+    setForm({
+      name: "",
+      phoneNo: "",
+      email: "",
+      photo: null
+    });
+  };
 
   return (
-    <>
-    <p>{JSON.stringify(form)}</p>
-    <form onSubmit={submit} className='card p-3 mb-3'>
-        <input name="name" onChange={handleChange} type='text'  placeholder='Name' className='form-control mb-2'/>
-        <input name="phoneNo" onChange={handleChange} type='text' placeholder='Phone' className='form-control mb-2'/>
-        <input name="email" onChange={handleChange} type='text' placeholder='Email' className='form-control mb-2'/>
-        <input name="photo" onChange={handleChange} type='file' placeholder='photo' className='form-control mb-2'/>
-        <button className='btn btn-success'>
-            <i className="fa fa-plus" aria-hidden="true"></i>
-            Add Contact
-        </button>
+    <form onSubmit={submit} className="card p-3 mb-3">
+        <h5>{editData ? "Edit contact" : "Add contact"}</h5>
+      <input
+        name="name"
+        value={form.name}
+        onChange={handleChange}
+        placeholder="Name"
+        className="form-control mb-2"
+      />
+
+      <input
+        name="phoneNo"
+        value={form.phoneNo}
+        onChange={handleChange}
+        placeholder="Phone no"
+        className="form-control mb-2"
+      />
+
+      <input
+        name="email"
+        value={form.email}
+        onChange={handleChange}
+        placeholder="Email"
+        className="form-control mb-2"
+      />
+
+      <input
+        type="file"
+        name="photo"
+        onChange={handleChange}
+        className="form-control mb-2"
+      />
+      <button className="btn btn-success">{editData ?"Update" : "Add Contact"}</button>
     </form>
-    </>
-  )
+  );
 }
+
+export default ContactForm;

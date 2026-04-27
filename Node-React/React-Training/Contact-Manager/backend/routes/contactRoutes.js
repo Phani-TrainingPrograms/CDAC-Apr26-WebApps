@@ -4,12 +4,27 @@ const Contact = require("../models/contact")//In module, give the extension also
 const multer = require("multer");//for file uploading purpose. 
 const path = require('path')//for file paths
 
+
+//Saving to the file...
+const storage = multer.diskStorage({
+    destination: (req, file, cb) =>{ //A string or function that determines the 
+        // destination path for uploaded files. If a string is passed and the directory does not exist, 
+        // Multer attempts to create it recursively. 
+        // If neither a string or a function is passed, the destination defaults to os.tmpdir().
+        cb(null, "uploads/")
+    },
+    filename:(req, file, cb)=>{
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+})
+const upload = multer({storage})
 router.get("/", async(req, res)=>{
     const contacts = await Contact.find();//Using mongoose, U will not use old mongodb APIs
     res.json(contacts)
 })
 
-router.post("/contact", async(req, res)=>{
+router.post("/contact", upload.single("photo"), async(req, res)=>{
+    console.log(JSON.stringify(req.body))
     const contact = new Contact({
         name: req.body.name,
         phoneNo: req.body.phoneNo,
@@ -20,7 +35,9 @@ router.post("/contact", async(req, res)=>{
     res.json(contact);//save function shall add the record to the db using mongoose
 })
 
-router.put("/contact", async(req, res)=>{
+router.put("/:id", upload.single("photo") ,async(req, res)=>{
+    console.log(req.params.id)
+    console.log(req.body)
     const updated = await Contact.findByIdAndUpdate(req.params.id, req.body, { new : true});
     res.json(updated)
 })
@@ -30,19 +47,5 @@ router.delete("/:id", async(req, res)=>{
     res.json({"message" : "Deleted successfully"})
 })
 
-
-//Saving to the file...
-const storage = multer.diskStorage({
-    destination: (req, file, cb) =>{ //A string or function that determines the 
-        // destination path for uploaded files. If a string is passed and the directory does not exist, 
-        // Multer attempts to create it recursively. 
-        // If neither a string or a function is passed, the destination defaults to os.tmpdir().
-        cb(null, "images/")
-    },
-    filename:(req, file, cb)=>{
-        cb(null, Date.now + path.extname(file.originalname));
-    }
-})
-const upload = multer({storage})
 
 module.exports = router;
