@@ -1,6 +1,23 @@
 # CDAC-Apr26-WebApps
 Demos on NodeJs and React
 
+### Topics Covered
+ES Features of JS  
+Nodejs  
+Build in modules: fs, events, os, http  
+Create custom modules using module and CommonJs  
+Build Http Server   
+Express Apps  
+REST APIs using Express  
+DB Interactions with Mongodb and MySQL  
+React apps  
+Props  
+Hooks (useState, useEffect )    
+State Management  
+Statefull Components  
+Functional Components  
+E2E Application that connects to back end service and perform CRUD operations. 
+
 ### Assignment practise for Lab exam
 1. Create a Product Management software that store products in a Mongodb database. The Application shall be created in React for interacting with the data stored in Mongodb.
 2. Each product contains info like ProductName, Cost, ExpiryDate, StockCount, Image(optional).
@@ -29,3 +46,4 @@ Demos on NodeJs and React
 #### External libraries for front end:
 - Axios
 - Bootstrap
+
